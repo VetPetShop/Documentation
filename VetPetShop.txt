@@ -1,0 +1,191 @@
+			VetPetShop
+
+
+Users 
+ - user_id [ int, Primary Key, auto_increment ]
+ - first_name - [ varchar, not null ]
+ - middle_name - [ varchar ]
+ - last_name - [ varchar, not null ]
+ - gender - [ Enum(M, F, O) , not null]
+ - dob - [ date, not null ]
+ - email - [ varchar , not null, unique]
+ - password - [ varchar, not null ]
+ - user_type [ Enum(CUSTOMER, SELLER, DOCTOR, ADMIN) ]
+ - address - [ text, not null ]
+ - post_id - [ foreign key Post_Offices(post_id) ]
+ - phone_number - [ bigint, not null, unique ]
+
+
+Doctors ( should be approved by admin only )
+ - license_no - [ varchar, primary key ] - alphanumeric value
+ - doctor_id - [ foreign key Users(user_id) ]
+ - specialization - [ text, not null ]
+ - qualification - [ text, not null ]
+ - Clinic_address - [ text, not null ]
+
+
+Sellers ( should be approved by admin only )
+ - GST_no (varchar, primary-key) - alphanumeric value
+ - seller_id( foreign_key Users(user_id))
+ - seller_policy (related to pets, shipping, etc)
+ - total_sales
+
+
+Districts [pre-inserted values]
+ - district_id - [ primary key, auto-generated ]
+ - district_name - [ varchar, not null, unique ]
+
+
+Cities [pre-inserted values]
+ - city_id - [ primary key, auto-generated ]
+ - city_name - [ varchar, not null, unique ]
+ - district_id - [ foreign key Districts(district_id) ]
+
+Post_Offices ( pre-inserted values + others )
+ - post_id - [ primary key, auto-generated ]
+ - post_name - [ varchar, not null, unique ]
+ - city_id - [ foreign key Cities(city_id) ]
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+-----------------------------------------------------------------
+
+Promotions [optional]
+ - promotion_id - [ varchar, primary-key] - alphanumeric(randomly-generated alphabets + incremental numbers)
+ - promotion_name - [ text, not-null]
+ - product_category_id - [ foreign-key product_category(category_id)]
+ - description - [ text, not-null]
+ - discount_rate - [ int, not-null]
+ - start_date - [date, not-null]
+ - end_date - [ date, not-null]
+
+---------------------------------------------------------------------
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Pets
+- pet_id ( int, Priamry-key, auto_increment ) 
+- breed_id ( varchar, foreign-key Pet_breed(breed_id))
+- description ( short description about the individual traits/behaviour of the pet, etc)
+- seller_id ( foreign-key Users(user_id))
+- pet_age ( int, not null)
+- gender ( enum[M,F] )
+- height ( double, not null)
+- weight ( double, not null)
+- pet_colour ( varchar, not null)
+- medical_details ( text, not null)
+- price ( double, not null)
+- pet_images ( blob, not null)
+
+Pet_category
+- pet_category_id ( int, Primary-key, auto_generated)
+- category ( DOG, CAT, BIRD,...) (enum class)
+
+Pet_breed 
+- breed_id (varchar, Primary-key, auto_increment) - alphanumeric values
+- breed_name (Persian cat, Bombay cat,...)(labrador, german-shepherd,...)
+- breed_description ( text, not_null ) (nature/behaviour, general parameters)
+- pet_category_id ( int, Foreign-key Pet_category(pet_category_id))
+
+Pet_reviews
+ - review_id - [ varchar, primary-key] - alphanumeric values
+ - pet_id - [ int, foreign-key Products(product_id)]
+ - user_id - [ int, foreign-key Users(user_id)]
+ - customer_rating [1-5] - [int, not-null]
+ - review (text)
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+---------------------------------------------------------------------------
+Payments 
+ - transaction_id - [varchar, primary-key] - alphanumeric values
+ - user_id ( linked with user and payment_method table(indirectly using user_id))
+ - amount_paid (double, not null)
+ - payment_date (date, not null)
+ - status(T/F) (boolean)
+
+Payment method
+ - user_id( int, Pk value = foreign-key Users(user_id))
+ - payment_method (enum[UPI, Debit, Credit,...])
+ - payment_method_details (text, UPI_id/card_no/expiry_Date)
+
+Orders (will generate only if payment status is T)
+ - order_id ( varchar, primary-key, auto_increment) - alphanumeric values
+ - transaction_id ( varchar, foreign-key Payments(transaction_id))
+ - order_date ( date, not null)
+ - cart_id (to get pets from cart) || cart_id = user_id
+ - discount_given
+ - shipping_address - [ currently where the product is being delivered]
+ - expected_delivery_date
+ - status_id - [ int, foreign-key Order_status(status_id)]
+
+Refunds (if order cancelled and refund requested)
+ - refund_id ( varchar, primary-key, auto_increment) - alphanumeric values
+ - order_id ( varchar, foreign-key Orders(order_id))
+ - status ( enum[initiated, success, cancelled])
+
+Order_status
+ - status_id(int, primary key)
+ - status(delivered,pending/dispatched,cancelled)
+
+Cart (only for customer type)
+ - cart_id ( int, primary-key = foreign-key Users(user_id) ) 
+ - pets - (text) [pet_id$quantity,] ( concatenated with two separators['$', ','])
+ - number_of_items (int)
+ - total_price (double)
+
+Issues
+ - issue_id (varchar, primary-key, auto-increment) - alphanumeric values
+ - user_id (int, foreign-key Users(user_id))
+ - issue_category ( enum[order, refund, other] )
+ - order_id (varchar)
+ - description (text)
+
+--------------------------------------------------------------------------
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Tech-Stack
+ - Spring Boot Data JPA [ DAO, 3-controllers(user-specific), Services, Pojos, DTO's ]
+ - React.js ( Component programming )
+ - MySQL
+
+CICD :
+ - github, 
+
+--------------------------------------------------------------------
+Web-application pages : 
+
+Home-page > about_us, contact_us
+Login-page , Sign-up page, forgot password
+seller-dashboard, cart-page, payment-page, doctor's-page, settings-page[ personal-info, ], products-page, pets-page, chatting-page, 
+VetPetShop-logo, orders-page, issues-page.
+
+
+Settings : Your Account, Privacy & Permissions, Billing and Payments
+
+Customers : home-page(default), 
+	
+Sellers : dashboad-page to monitor and maintain his/her sales, products, etc
+
+Admin :
+	Requests-page(where he can see all the request and approve when verified),
+ 
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+------------------------------------------------------------------------------	
+
+Functionalities :
+	searching, sorting, filtering, chat-room, video-call(optional), 
+
+
+
+
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+---------------------------------------------------------------------------------
+	      FEEL FREE TO GIVE IDEAS AND SUGGESTIONS BELOW
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+---------------------------------------------------------------------------------
+Suggestions :
+
+ 1]
+
+ 2]
