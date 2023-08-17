@@ -4,7 +4,6 @@
 Users 
  - user_id [ int, Primary Key, auto_increment ]
  - first_name - [ varchar, not null ]
- - middle_name - [ varchar ]
  - last_name - [ varchar, not null ]
  - gender - [ Enum(M, F, O) , not null]
  - dob - [ date, not null ]
@@ -65,7 +64,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Pets
 - pet_id ( int, Priamry-key, auto_increment ) 
 - breed_id ( varchar, foreign-key Pet_breed(breed_id))
-- description ( short description about the individual traits/behaviour of the pet, etc)
+- description ( short description about the individual traits/behaviour of that pet, etc)
 - seller_id ( foreign-key Users(user_id))
 - pet_age ( int, not null)
 - gender ( enum[M,F] )
@@ -81,7 +80,7 @@ Pet_category
 - category ( DOG, CAT, BIRD,...) (enum class)
 
 Pet_breed 
-- breed_id (varchar, Primary-key, auto_increment) - alphanumeric values
+- breed_id (varchar, Primary-key) - alphanumeric values
 - breed_name (Persian cat, Bombay cat,...)(labrador, german-shepherd,...)
 - breed_description ( text, not_null ) (nature/behaviour, general parameters)
 - pet_category_id ( int, Foreign-key Pet_category(pet_category_id))
@@ -96,44 +95,44 @@ Pet_reviews
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ---------------------------------------------------------------------------
 Payments 
- - transaction_id - [varchar, primary-key] - alphanumeric values
+ - transaction_id - [varchar, primary-key] - alphanumeric values = (for COD - transaction_id will be COD-123)
  - user_id ( linked with user and payment_method table(indirectly using user_id))
  - amount_paid (double, not null)
  - payment_date (date, not null)
- - status(T/F) (boolean)
+ - status_id - [ int, foreign-key Order_status(status_id)]
 
 Payment method
  - user_id( int, Pk value = foreign-key Users(user_id))
- - payment_method (enum[UPI, Debit, Credit,...])
+ - payment_method (enum[UPI, Debit, Credit, COD,...])
  - payment_method_details (text, UPI_id/card_no/expiry_Date)
 
 Orders (will generate only if payment status is T)
- - order_id ( varchar, primary-key, auto_increment) - alphanumeric values
- - transaction_id ( varchar, foreign-key Payments(transaction_id))
+ - order_id ( varchar, primary-key) - alphanumeric values
+ - transaction_id ( varchar, foreign-key Payments(transaction_id)) (for COD - transaction_id will be COD-123)
  - order_date ( date, not null)
- - cart_id (to get pets from cart) || cart_id = user_id
- - discount_given
+ - cart_id (to get pets from cart) || cart_id = foreign-key Users(user_id)
+ - discount_given (int, default-0)
  - shipping_address - [ currently where the product is being delivered]
- - expected_delivery_date
+ - expected_delivery_date [date, not-null]
  - status_id - [ int, foreign-key Order_status(status_id)]
 
 Refunds (if order cancelled and refund requested)
- - refund_id ( varchar, primary-key, auto_increment) - alphanumeric values
+ - refund_id ( varchar, primary-key) - alphanumeric values
  - order_id ( varchar, foreign-key Orders(order_id))
- - status ( enum[initiated, success, cancelled])
+ - status_id (int, foreign-key Status(status_id))
 
-Order_status
+Status
  - status_id(int, primary key)
- - status(delivered,pending/dispatched,cancelled)
+ - status( enum [delivered,pending,dispatched,cancelled, COD, initiated, success, cancelled, True, False])
 
 Cart (only for customer type)
- - cart_id ( int, primary-key = foreign-key Users(user_id) ) 
+ - cart_id ( int, primary-key = foreign-key Users(user_id) )
  - pets - (text) [pet_id$quantity,] ( concatenated with two separators['$', ','])
- - number_of_items (int)
- - total_price (double)
+ - number_of_items (int) - can be null (initially)
+ - total_price (double) - can be null (initially)
 
 Issues
- - issue_id (varchar, primary-key, auto-increment) - alphanumeric values
+ - issue_id (varchar, primary-key) - alphanumeric values
  - user_id (int, foreign-key Users(user_id))
  - issue_category ( enum[order, refund, other] )
  - order_id (varchar)
@@ -170,11 +169,10 @@ Admin :
  
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-------------------------------------------------------------------------------	
+------------------------------------------------------------------------------
 
 Functionalities :
 	searching, sorting, filtering, chat-room, video-call(optional), 
-
 
 
 
